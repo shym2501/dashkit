@@ -24,8 +24,8 @@ class VoucherFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'value' => fake()->word(),
-            'as_a' => fake()->word(),
+            'value' => fake()->randomNumber(),
+            'as_a' => fake()->boolean(),
         ];
     }
 }

@@ -18,6 +18,7 @@ class Product extends Model
         'discount',
         'category_id',
         'link',
+        'total',
     ];
 
     public function category()
@@ -25,4 +26,8 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function flashSale()
+    {
+        return $this->belongsTo(FlashSale::class);
+    }
 }

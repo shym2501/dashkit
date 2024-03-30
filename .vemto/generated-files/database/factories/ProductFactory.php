@@ -24,12 +24,13 @@ class ProductFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'image' => fake()->word(),
             'price' => fake()->randomFloat(2, 0, 9999),
             'discount' => fake()->randomFloat(2, 0, 9999),
             'total' => fake()->randomFloat(2, 0, 9999),
-            'link' => fake()->word(),
+            'link' => fake()->text(255),
+            'is_visibled' => fake()->word(),
             'category_id' => \App\Models\Category::factory(),
+            'flash_sale_id' => \App\Models\FlashSale::factory(),
         ];
     }
 }

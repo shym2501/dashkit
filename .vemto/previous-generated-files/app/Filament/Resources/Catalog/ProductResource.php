@@ -11,12 +11,14 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\CheckboxColumn;
 use App\Filament\Resources\Catalog\ProductResource\Pages;
 use App\Filament\Resources\Catalog\ProductResource\RelationManagers;
 
@@ -25,6 +27,8 @@ class ProductResource extends Resource
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $recordTitleAttribute = 'Produk';
 
     protected static ?int $navigationSort = 1;
 
@@ -59,6 +63,7 @@ class ProductResource extends Resource
                         ->rules(['image'])
                         ->nullable()
                         ->maxSize(1024)
+                        ->preserveFilenames()
                         ->image()
                         ->imageEditor()
                         ->imageEditorAspectRatios([null, '16:9', '4:3', '1:1']),
@@ -73,8 +78,13 @@ class ProductResource extends Resource
                         ->numeric()
                         ->step(1),
 
+                    TextInput::make('total')
+                        ->nullable()
+                        ->numeric()
+                        ->step(1),
+
                     Select::make('category_id')
-                        ->required()
+                        ->nullable()
                         ->relationship('category', 'name')
                         ->searchable()
                         ->preload()
@@ -83,6 +93,17 @@ class ProductResource extends Resource
                     TextInput::make('link')
                         ->required()
                         ->string(),
+
+                    Toggle::make('is_visibled')
+                        ->rules(['boolean'])
+                        ->required(),
+
+                    Select::make('flash_sale_id')
+                        ->nullable()
+                        ->relationship('flashSale', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false),
                 ]),
             ]),
         ]);
@@ -101,9 +122,15 @@ class ProductResource extends Resource
 
                 TextColumn::make('discount'),
 
+                TextColumn::make('total'),
+
                 TextColumn::make('category.name'),
 
                 TextColumn::make('link'),
+
+                CheckboxColumn::make('is_visibled'),
+
+                TextColumn::make('flashSale.name'),
             ])
             ->filters([])
             ->actions([

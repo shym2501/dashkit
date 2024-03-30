@@ -11,16 +11,17 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\CheckboxColumn;
 use App\Filament\Resources\Catalog\ProductResource\Pages;
 use App\Filament\Resources\Catalog\ProductResource\RelationManagers;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Illuminate\Support\Str;
 
 
 class ProductResource extends Resource
@@ -28,6 +29,8 @@ class ProductResource extends Resource
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+
+    protected static ?string $recordTitleAttribute = 'Produk';
 
     protected static ?int $navigationSort = 1;
 
@@ -61,8 +64,8 @@ class ProductResource extends Resource
                     FileUpload::make('image')
                         ->rules(['image'])
                         ->nullable()
+                        ->maxSize(1024)
                         ->image()
-                        ->maxSize(2048)
                         ->optimize('webp')
                         ->directory('product')
                         ->getUploadedFileNameForStorageUsing(
@@ -82,7 +85,7 @@ class ProductResource extends Resource
                         ->step(1),
 
                     Select::make('category_id')
-                        ->required()
+                        ->nullable()
                         ->relationship('category', 'name')
                         ->searchable()
                         ->preload()
@@ -90,7 +93,18 @@ class ProductResource extends Resource
 
                     TextInput::make('link')
                         ->required()
-                        ->string(),
+                        ->url(),
+
+                    Toggle::make('is_visibled')
+                        ->rules(['boolean'])
+                        ->required(),
+
+                    Select::make('flash_sale_id')
+                        ->nullable()
+                        ->relationship('flashSale', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->native(false),
                 ]),
             ]),
         ]);
@@ -100,32 +114,25 @@ class ProductResource extends Resource
     {
         return $table
             ->poll('60s')
-            ->recordTitleAttribute('name')
-            ->defaultSort('name')
             ->columns([
-                TextColumn::make('name')
-                    ->sortable(),
+                ImageColumn::make('image')->visibility('public')->square(),
 
-                ImageColumn::make('image')
-                    ->visibility('public'),
+                TextColumn::make('name'),
 
-                TextColumn::make('category.name')
-                    ->label('Kategori')
-                    ->sortable(),
+                TextColumn::make('price')->currency('IDR'),
 
-                TextColumn::make('price')
-                    ->label('Harga')
-                    ->currency('IDR')
-                    ->sortable(),
+                TextColumn::make('discount'),
 
-                TextColumn::make('discount')
-                    ->label('Diskon'),
+                TextColumn::make('total')->currency('IDR'),
 
-                TextColumn::make('total')
-                    ->label('Total')
-                    ->currency('IDR'),
+                TextColumn::make('category.name'),
 
                 TextColumn::make('link'),
+
+                CheckboxColumn::make('is_visibled')
+                    ->label('Visibility'),
+
+                TextColumn::make('flashSale.name'),
             ])
             ->filters([])
             ->actions([
@@ -153,7 +160,6 @@ class ProductResource extends Resource
             'create' => Pages\CreateProduct::route('/create'),
             'view' => Pages\ViewProduct::route('/{record}'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
-            // 'index' => Pages\ManageProducts::route('/'),
         ];
     }
 }

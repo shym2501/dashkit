@@ -25,8 +25,7 @@ class FreeAssetFactory extends Factory
         return [
             'name' => fake()->name(),
             'description' => fake()->sentence(15),
-            'image' => fake()->word(),
-            'link' => fake()->word(),
+            'link' => fake()->text(),
         ];
     }
 }

@@ -8,7 +8,8 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Event;
 use App\Models\Product;
 use App\Observers\ProductObserver;
-use App\Observers\TotalObserver;
+use App\Models\FreeAsset;
+use App\Observers\FreeAssetObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -29,7 +30,7 @@ class EventServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Product::observe(ProductObserver::class);
-        // Product::observe(TotalObserver::class);
+        FreeAsset::observe(FreeAssetObserver::class);
     }
 
     /**

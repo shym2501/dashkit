@@ -19,7 +19,14 @@ Route::prefix('/dashboard')
     ->group(function () {});
 
 // Catalog
-Route::prefix('/')
+Route::prefix('/catalog')
     ->name('catalog.')
     ->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])
     ->group(function () {});
+
+// Promotion
+Route::prefix('/promotion')
+    ->name('promotion.')
+    ->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])
+    ->group(function () {});
+

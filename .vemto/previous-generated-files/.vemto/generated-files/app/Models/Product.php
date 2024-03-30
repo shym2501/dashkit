@@ -11,8 +11,23 @@ class Product extends Model
 
     protected $guarded = [];
 
+    protected $fillable = [
+        'name',
+        'image',
+        'price',
+        'discount',
+        'category_id',
+        'link',
+        'total',
+    ];
+
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function flashSale()
+    {
+        return $this->belongsTo(FlashSale::class);
     }
 }

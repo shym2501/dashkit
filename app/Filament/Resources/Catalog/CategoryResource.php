@@ -28,21 +28,6 @@ class CategoryResource extends Resource
 
     protected static ?string $navigationGroup = 'Catalog';
 
-    public static function getModelLabel(): string
-    {
-        return __('crud.categories.itemTitle');
-    }
-
-    public static function getPluralModelLabel(): string
-    {
-        return __('crud.categories.collectionTitle');
-    }
-
-    public static function getNavigationLabel(): string
-    {
-        return __('crud.categories.collectionTitle');
-    }
-
     public static function form(Form $form): Form
     {
         return $form->schema([
